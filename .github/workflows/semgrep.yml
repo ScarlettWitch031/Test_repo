@@ -54,7 +54,11 @@ jobs:
          semgrep --config p/r2c --baseline-commit HEAD~ --json > findings.json
      
      - name: Post comments for each finding
-       run: python comments.py
+       run: |
+         pip list
+         source venv/bin/activate
+         pip list
+         python comments.py
        env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
