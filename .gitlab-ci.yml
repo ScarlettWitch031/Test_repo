@@ -1,54 +1,29 @@
-name: Semgrep SAST Scan
+stages:
+  - semgrep
 
-on:
-  pull_request:
-    branches:
-      - main  # adjust if your default branch is different
-jobs:
-  semgrep:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+semgrep-sast:
+  stage: semgrep
+  image: python:3.11
+  variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  cache:
+    paths:
+      - .cache/pip
+  before_script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install --upgrade pip
+    - pip install requests semgrep
+  script:
+    - echo "🔍 Running Semgrep SAST scan"
+    - semgrep login --token "$SEMGREP_TOKEN"
+    - semgrep ci --baseline-commit origin/main --json > findings.json
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.11'
-          
-      - name: Cache pip packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Create venv and install deps
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install requests semgrep
-          
-      - name: Install dependencies
-        run: pip install requests semgrep
-
-      - name: Run Semgrep
-        env: 
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP }}
-        run: |
-          env
-          semgrep ci --baseline-commit HEAD~ --json > findings.json
-
-      - name: Posts3 comments for each finding
-        run: |
-          source venv/bin/activate
-          python comments.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - echo "💬 Posting comments from findings.json"
+    - python comments.py
+  only:
+    - merge_requests
+  artifacts:
+    paths:
+      - findings.json
+    expire_in: 1 week
