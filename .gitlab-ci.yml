@@ -18,7 +18,7 @@ semgrep-sast:
   script:
     - echo "🔍 Running Semgrep SAST scan"
     - semgrep login --token "$SEMGREP_APP_TOKEN"
-    - semgrep ci --baseline-commit origin/main --json > findings.json
+    - semgrep ci --baseline-commit HEAD~ --json > findings.json
 
     - echo "💬 Posting comments from findings.json"
     - python gitlab_comments.py
