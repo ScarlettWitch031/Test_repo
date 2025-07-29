@@ -4,62 +4,50 @@ on:
   pull_request:
     branches:
       - main  # adjust if your default branch is different
-
-#jobs:
-#   emgrep:
-#   runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0  # ensures complete history for PR diff
-#
-#      - name: Run Semgrep and post PR comments
-#        uses: returntocorp/semgrep-action@v1
-#        with:
-#          publishToken: ${{ secrets.SEMGREP }}
-#          baselineRef: origin/main
-#          generateSarif: true
-
 jobs:
- semgrep:
-   runs-on: ubuntu-latest
-#   container:
-#     image: returntocorp/semgrep:latest
-   steps:
-     - name: Checkout code
-       uses: actions/checkout@v2
-       with:
-         fetch-depth: 0
-     
-     - name: Set up Python
-       uses: actions/setup-python@v2
-       with:
-         python-version: '3.x'
+  semgrep:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-     - name: Create venv and install deps
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Create venv and install deps
         run: |
-         python -m venv venv
-         source venv/bin/activate
-         pip install --upgrade pip
-         pip install requests semgrep
-         pip list
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install requests semgrep
+          
+      - name: Install dependencies
+        run: pip install requests semgrep
 
-     - name: Install dependencies
-       run: pip install requests semgrep 
+      - name: Run Semgrep
+        run: |
+          env
+          semgrep --config "https://semgrep.dev/p/semgrep-security" --baseline-commit HEAD~ --json > findings.json
 
-     - name: Run Semgrep
-       run: |
-         env
-         semgrep --config p/r2c --baseline-commit HEAD~ --json > findings.json
-     
-     - name: Posts3 comments for each finding
-       run: |
-         pip list
-         source venv/bin/activate
-         pip list
-         python comments.py
-       env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+      - name: Posts3 comments for each finding
+        run: |
+          source venv/bin/activate
+          python comments.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
