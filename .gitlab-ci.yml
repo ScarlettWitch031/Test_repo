@@ -24,7 +24,11 @@ semgrep:
   variables:
     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
 
+# 
+#
 # workflow:
+#
+#
 #   rules:
 #     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 #     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
