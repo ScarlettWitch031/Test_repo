@@ -21,6 +21,5 @@ jobs:
           publishToken: ${{ secrets.SEMGREP }}
           baselineRef: origin/main
           generateSarif: true
-        env:
-          SEMGREP_RULES: auto
+        
 
