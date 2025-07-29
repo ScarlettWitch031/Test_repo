@@ -26,6 +26,6 @@ workflow:
 
 job1:
   script:
-    - echo "This job runs in merge request pipelines $CI_PIPELINE_SOURCE"
+    - echo "This job runs in merge request pipelines $CI_PIPELINE_SOURCE $CI_COMMIT_BRANCH $CI_DEFAULT_BRANCH"
   # rules:
   #   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
