@@ -33,11 +33,17 @@ jobs:
        with:
          fetch-depth: 0
      
-     - name: Set up Python environment
+     - name: Set up Python
        uses: actions/setup-python@v2
        with:
          python-version: '3.x'
 
+     - name: Create venv and install deps
+        run: |
+         python -m venv venv
+         source venv/bin/activate
+         pip install --upgrade pip
+         pip install requests semgrep
 
      - name: Install dependencies
        run: pip install requests semgrep 
