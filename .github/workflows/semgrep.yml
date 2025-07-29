@@ -54,9 +54,7 @@ jobs:
 
       - name: Posts3 comments for each finding
         run: |
-          pip list
           source venv/bin/activate
-          pip list
           python comments.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
