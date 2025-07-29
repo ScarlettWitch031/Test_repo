@@ -4,22 +4,50 @@ on:
   pull_request:
     branches:
       - main  # adjust if your default branch is different
-
 jobs:
   semgrep:
     runs-on: ubuntu-latest
-
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # ensures complete history for PR diff
+          fetch-depth: 0
 
-      - name: Run Semgrep and post PR comments
-        uses: returntocorp/semgrep-action@v1
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          publishToken: ${{ secrets.SEMGREP }}
-          baselineRef: origin/main
-          generateSarif: true
-        
+          python-version: '3.x'
+          
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Create venv and install deps
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install requests semgrep
+          
+      - name: Install dependencies
+        run: pip install requests semgrep
+
+      - name: Run Semgrep
+        run: |
+          env
+          semgrep --config "https://semgrep.dev/p/semgrep-security" --baseline-commit HEAD~ --json > findings.json
+
+      - name: Posts3 comments for each finding
+        run: |
+          source venv/bin/activate
+          python comments.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
