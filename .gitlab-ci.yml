@@ -1,35 +1,13 @@
-# First: Define when pipelines are allowed
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'  # runs on main
-    - if: '$CI_COMMIT_TAG' # fallback runs for other cases
-
 stages:
-  - semgrep
+  - test
 
-semgrep-sast:
-  stage: semgrep
-  image: python:3.11
-  variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  cache:
-    paths:
-      - .cache/pip
-  before_script:
-    - python -m venv venv
-    - source venv/bin/activate
-    - pip install --upgrade pip
-    - pip install requests semgrep
+semgrep:
+  stage: test
+  image: semgrep/semgrep
   script:
-    - echo "🔍 Running Semgrep SAST scan"
-    - semgrep login --token "$SEMGREP_APP_TOKEN"
-    - semgrep ci --baseline-commit "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" --json > findings.json
-    - echo "💬 Posting comments from findings.json"
-    - python gitlab_comments.py
+    - semgrep ci --dataflow-traces
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'  # run this job only on MR pipeline
-  artifacts:
-    paths:
-      - findings.json
-    expire_in: 1 week
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  variables:
+    SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
