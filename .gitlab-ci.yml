@@ -22,8 +22,8 @@ semgrep:
   rules:
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  variables:
-    SEMGREP_APP_TOKEN: '$SEMGREP_APP_TOKEN'
+#  variables:
+#    SEMGREP_APP_TOKEN: '$SEMGREP_APP_TOKEN'
 
 # 
 #
