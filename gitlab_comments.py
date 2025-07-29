@@ -51,3 +51,5 @@ for finding in findings.get("results", []):
     if response.status_code != 201:
         raise Exception(f"Failed to post comment: {response.status_code} {response.text}")
 
+
+print()
