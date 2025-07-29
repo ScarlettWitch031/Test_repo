@@ -47,4 +47,3 @@ class File:
 
 file = File("../../../etc/passwd")  # Simulating a potential attack
 upload_file(file)
-
