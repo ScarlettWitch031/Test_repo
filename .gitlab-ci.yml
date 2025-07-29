@@ -1,6 +1,3 @@
-stages:
-  - semgrep
-
 semgrep-sast:
   stage: semgrep
   image: python:3.11
@@ -19,11 +16,10 @@ semgrep-sast:
     - echo "🔍 Running Semgrep SAST scan"
     - semgrep login --token "$SEMGREP_APP_TOKEN"
     - semgrep ci --baseline-commit "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" --json > findings.json
-
     - echo "💬 Posting comments from findings.json"
     - python gitlab_comments.py
-  only:
-    - merge_requests
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   artifacts:
     paths:
       - findings.json
