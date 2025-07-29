@@ -44,6 +44,7 @@ jobs:
          source venv/bin/activate
          pip install --upgrade pip
          pip install requests semgrep
+         pip list
 
      - name: Install dependencies
        run: pip install requests semgrep 
@@ -53,7 +54,7 @@ jobs:
          env
          semgrep --config p/r2c --baseline-commit HEAD~ --json > findings.json
      
-     - name: Post comments for each finding
+     - name: Posts3 comments for each finding
        run: |
          pip list
          source venv/bin/activate
