@@ -6,6 +6,7 @@ semgrep-sast:
   image: python:3.11
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+    GITLAB_TOKEN: $GITLAB_TOKEN
   cache:
     paths:
       - .cache/pip
@@ -20,7 +21,7 @@ semgrep-sast:
     - semgrep ci --baseline-commit origin/main --json > findings.json
 
     - echo "💬 Posting comments from findings.json"
-    - python comments.py
+    - python gitlab_comments.py
   only:
     - merge_requests
   artifacts:
