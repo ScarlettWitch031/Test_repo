@@ -40,9 +40,11 @@ jobs:
         run: pip install requests semgrep
 
       - name: Run Semgrep
+        env: 
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP }}
         run: |
           env
-          semgrep --config "https://semgrep.dev/p/semgrep-security" --baseline-commit HEAD~ --json > findings.json
+          semgrep ci --baseline-commit HEAD~ --json > findings.json
 
       - name: Posts3 comments for each finding
         run: |
