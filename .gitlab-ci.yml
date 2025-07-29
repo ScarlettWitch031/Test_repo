@@ -16,7 +16,7 @@ semgrep-sast:
     - pip install requests semgrep
   script:
     - echo "🔍 Running Semgrep SAST scan"
-    - semgrep login --token "$SEMGREP_TOKEN"
+    - semgrep login --token "$SEMGREP_APP_TOKEN"
     - semgrep ci --baseline-commit origin/main --json > findings.json
 
     - echo "💬 Posting comments from findings.json"
