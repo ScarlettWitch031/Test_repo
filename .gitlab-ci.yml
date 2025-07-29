@@ -1,18 +1,29 @@
+# workflow:
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# stages:
+#   - test
+
+# semgrep:
+#   stage: test
+#   image: semgrep/semgrep
+#   script:
+#     - semgrep ci --dataflow-traces
+#   rules:
+#     - if: $CI_MERGE_REQUEST_IID
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#   variables:
+#     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
-stages:
-  - test
-
-semgrep:
-  stage: test
-  image: semgrep/semgrep
+job1:
   script:
-    - semgrep ci --dataflow-traces
-  rules:
-    - if: $CI_MERGE_REQUEST_IID
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  variables:
-    SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
+    - echo "This job runs in merge request pipelines"
+
+job2:
+  script:
+    - echo "This job also runs in merge request pipelines"
