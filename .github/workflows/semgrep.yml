@@ -33,21 +33,19 @@ jobs:
        with:
          fetch-depth: 0
      
-     - name: Install dependencies
-       run: pip install requests
-
-     - name: Install Semgrep
-       run: pip install semgrep
-     
-     - name: Run Semgrep
-       run: |
-         env
-         semgrep --config p/r2c --baseline-commit HEAD~ --json > findings.json
-     
      - name: Set up Python environment
        uses: actions/setup-python@v2
        with:
          python-version: '3.x'
+
+
+     - name: Install dependencies
+       run: pip install requests semgrep 
+
+     - name: Run Semgrep
+       run: |
+         env
+         semgrep --config p/r2c --baseline-commit HEAD~ --json > findings.json
      
      - name: Post comments for each finding
        run: python comments.py
