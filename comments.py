@@ -22,7 +22,7 @@ headers = {
 }
 # Make the API request
 response = requests.get(
-    f'<https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/commits>',
+    f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/commits',
     headers=headers,
 )
 # Parse the response JSON
