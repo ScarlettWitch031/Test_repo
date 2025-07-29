@@ -1,8 +1,14 @@
+# First: Define when pipelines are allowed
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'  # runs on main
+    - if: '$CI_COMMIT_TAG'
+    - when: always  # fallback runs for other cases
+
 stages:
   - semgrep
-  - build
-  - test
-  - deploy
+
 semgrep-sast:
   stage: semgrep
   image: python:3.11
@@ -23,7 +29,7 @@ semgrep-sast:
     - echo "💬 Posting comments from findings.json"
     - python gitlab_comments.py
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'  # run this job only on MR pipeline
   artifacts:
     paths:
       - findings.json
