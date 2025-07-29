@@ -1,9 +1,14 @@
+stages:
+  - semgrep
+  - build
+  - test
+  - deploy
+
 semgrep-sast:
   stage: semgrep
   image: python:3.11
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-    GITLAB_TOKEN: $GITLAB_TOKEN
   cache:
     paths:
       - .cache/pip
