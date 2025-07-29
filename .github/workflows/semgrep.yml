@@ -5,21 +5,47 @@ on:
     branches:
       - main  # adjust if your default branch is different
 
+#jobs:
+#   emgrep:
+#   runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0  # ensures complete history for PR diff
+#
+#      - name: Run Semgrep and post PR comments
+#        uses: returntocorp/semgrep-action@v1
+#        with:
+#          publishToken: ${{ secrets.SEMGREP }}
+#          baselineRef: origin/main
+#          generateSarif: true
+
 jobs:
-  semgrep:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # ensures complete history for PR diff
-
-      - name: Run Semgrep and post PR comments
-        uses: returntocorp/semgrep-action@v1
-        with:
-          publishToken: ${{ secrets.SEMGREP }}
-          baselineRef: origin/main
-          generateSarif: true
-        
+ semgrep:
+   runs-on: ubuntu-latest
+   container:
+     image: returntocorp/semgrep:latest
+   steps:
+     - name: Checkout code
+       uses: actions/checkout@v2
+       with:
+         fetch-depth: 0
+     - name: Run Semgrep
+       run: |
+         env
+         semgrep --config p/r2c --baseline-commit HEAD~ --json > findings.json
+     - name: Set up Python environment
+       uses: actions/setup-python@v2
+       with:
+         python-version: '3.x'
+     
+     - name: Install dependencies
+       run: pip install requests
+          
+     - name: Post comments for each finding
+       run: python comments.py
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
