@@ -15,6 +15,7 @@ semgrep:
     - pip install --upgrade pip
     - pip install requests semgrep
     - git fetch --all
+    - echo $SEMGREP_APP_TOKEN
     - export BASE_COMMIT=$(git merge-base origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
     - semgrep scan --metrics=off --config p/ci --json --baseline-commit $BASE_COMMIT > findings.json
     - python gitlab_comments.py
