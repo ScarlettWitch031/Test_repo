@@ -47,10 +47,14 @@ for finding in findings['results']:
         'path': finding['path'],
         'line': finding['start']['line'],
     }
+    url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/comments'
     response = requests.post(
-        f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/comments',
+        url,
         headers=headers,
         json=payload,
     )
+    print(url)
+    print(headers)
+    print(payload)
     if response.status_code != 201:
         raise Exception(f'Failed to post comment: {response.content}')
