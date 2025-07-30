@@ -47,7 +47,9 @@ for finding in findings.get("results", []):
 
     url = f"{api_base_url}/projects/{project_id}/merge_requests/{merge_request_iid}/discussions"
     response = requests.post(url, headers=headers, json=payload)
-
+    print(url)
+    print(headers)
+    print(payload)
     if response.status_code != 201:
         raise Exception(f"Failed to post comment: {response.status_code} {response.text}")
 
