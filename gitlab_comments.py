@@ -52,4 +52,4 @@ for finding in findings.get("results", []):
         raise Exception(f"Failed to post comment: {response.status_code} {response.text}")
 
 
-print()
+print("checl")
