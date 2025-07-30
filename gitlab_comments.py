@@ -9,7 +9,7 @@ with open('findings.json', 'r') as f:
 # GitLab environment variables
 project_id = os.environ["CI_PROJECT_ID"]
 merge_request_iid = os.environ["CI_MERGE_REQUEST_IID"]
-gitlab_token = os.environ["GITLAB_TOKEN"]  # You must set this variable in GitLab
+gitlab_token = "glpat-XzJ_1GcnOpp-r5G369j-ZG86MQp1OmhncnRsCw.01.120ikg5h2"  # You must set this variable in GitLab
 
 # GitLab API endpoint
 api_base_url = os.environ.get("CI_API_V4_URL", "https://gitlab.com/api/v4")
