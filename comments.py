@@ -56,5 +56,6 @@ for finding in findings['results']:
         url,
         headers=headers,
         json=payload,
+    )
     if response.status_code != 201:
         raise Exception(f'Failed to post comment: {response.content}')
