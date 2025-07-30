@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: '3.11'
           
       - name: Cache pip packages
         uses: actions/cache@v3
@@ -40,6 +40,8 @@ jobs:
         run: pip install requests semgrep
 
       - name: Run Semgrep
+        env: 
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP }}
         run: |
           env
           semgrep scan --baseline-commit HEAD~ --json > findings.json
