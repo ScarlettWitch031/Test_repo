@@ -42,7 +42,7 @@ jobs:
       - name: Run Semgrep
         run: |
           env
-          semgrep --config "https://semgrep.dev/p/semgrep-security" --baseline-commit HEAD~ --json > findings.json
+          semgrep scan --baseline-commit HEAD~ --json > findings.json
 
       - name: Posts3 comments for each finding
         run: |
