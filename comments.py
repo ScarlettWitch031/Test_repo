@@ -49,7 +49,9 @@ for finding in findings['results']:
     }
     url = f'https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}/comments'
 
-    print(payload)   
+    print(payload['commit_id'])
+    print(payload['path'])
+    print(payload['line'])
     print(headers)
     print(url)
     response = requests.post(
