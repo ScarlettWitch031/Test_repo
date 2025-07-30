@@ -9,7 +9,7 @@ with open('findings.json', 'r') as f:
 # GitLab environment variables
 project_id = os.environ["CI_PROJECT_ID"]
 merge_request_iid = os.environ["CI_MERGE_REQUEST_IID"]
-gitlab_token = os.environ["GITLAB_TOKEN"]  # You must set this variable in GitLab
+gitlab_token = "glpat-XzJ_1GcnOpp-r5G369j-ZG86MQp1OmhncnRsCw.01.120ikg5h2"  # You must set this variable in GitLab
 
 # GitLab API endpoint
 api_base_url = os.environ.get("CI_API_V4_URL", "https://gitlab.com/api/v4")
@@ -47,7 +47,9 @@ for finding in findings.get("results", []):
 
     url = f"{api_base_url}/projects/{project_id}/merge_requests/{merge_request_iid}/discussions"
     response = requests.post(url, headers=headers, json=payload)
-
+    print(url)
+    print(headers)
+    print(payload)
     if response.status_code != 201:
         raise Exception(f"Failed to post comment: {response.status_code} {response.text}")
 
