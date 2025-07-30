@@ -44,7 +44,7 @@ jobs:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP }}
         run: |
           env
-          semgrep ci --baseline-commit HEAD~ --json > findings.json
+          semgrep --baseline-commit HEAD~ --json > findings.json
 
       - name: Posts3 comments for each finding
         run: |
